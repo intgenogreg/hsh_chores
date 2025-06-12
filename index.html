@@ -2,6 +2,8 @@
 <html>
 <head>
   <meta charset="UTF-8">
+  <meta name="description" content="為了學習獨立，培養生活自理能力，我們從簡單家事－－洗衣服、倒垃圾、切水果開始練習，也一起分擔家事！！此為輪值網站，每天隨機～～"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>甜蜜的家值日生</title>
   <style>
     button {
@@ -96,12 +98,23 @@
     }
 
     function rand() {
-      let p = [...people];
-      let clo = p.splice(Math.floor(Math.random() * p.length), 1)[0];
-      let gar = p.splice(Math.floor(Math.random() * p.length), 1)[0];
-      let fru = p.splice(Math.floor(Math.random() * p.length), 1)[0];
+      const all = [...people];
+
+      // 1. 抽洗衣服（不可重複）
+      const p1 = [...all];
+      const clo = p1.splice(Math.floor(Math.random() * p1.length), 1)[0];
+
+      // 2. 抽倒垃圾（不能是洗衣服的人）
+      const p2 = [...p1]; // 剩下的人
+      const gar = p2[Math.floor(Math.random() * p2.length)];
+
+      // 3. 抽切水果（只能排除洗衣服的人，但可以跟倒垃圾同人）
+      const p3 = all.filter(person => person !== clo);
+      const fru = p3[Math.floor(Math.random() * p3.length)];
+
       return { clothes: clo, garbage: gar, fruit: fru };
     }
+
 
     function updateUI(data) {
       document.getElementById("clothes").textContent = data.clothes;
