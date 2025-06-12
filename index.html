@@ -30,9 +30,9 @@
   </style>
 </head>
 <body>
-  <h1 style="text-align:center;">甜蜜的家值日生 輪值系統</h1>
-  <h3 style="text-align:center;"><span id="time"></span></h3>
-  <h3 style="text-align:center;">參與者：爸、媽、謙、冠</h3>
+  <h1 style="font-size:100px; text-align:center;">甜蜜的家 值日生 <br/> 輪值系統</h1>
+  <h3 style="font-size:50px; text-align:center;"><span id="time"></span></h3>
+  <h3 style="font-size:50px; text-align:center;">參與者：爸、媽、謙、冠</h3>
 
   <div style="font-size:40px"><center>
     <table width="1000" style="text-align:center;" border="1">
@@ -51,28 +51,27 @@
     </table>
   </center></div>
 
-  <!--使用firebase作為資料庫-->
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
-    <script>
-        const firebaseConfig = {
-            apiKey: "AIzaSyDi9v1HV7UFeQnePmg3ZUYeK3wO9O731GI",
-            authDomain: "hsh-chores.firebaseapp.com",
-            projectId: "hsh-chores",
-            storageBucket: "hsh-chores.firebasestorage.app",
-            messagingSenderId: "961868131334",
-            appId: "1:961868131334:web:216b9eb86697f5fe162787",
-            measurementId: "G-75SKCF41PG"
-        };
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyDi9v1HV7UFeQnePmg3ZUYeK3wO9O731GI",
+      authDomain: "hsh-chores.firebaseapp.com",
+      projectId: "hsh-chores",
+      storageBucket: "hsh-chores.firebasestorage.app",
+      messagingSenderId: "961868131334",
+      appId: "1:961868131334:web:216b9eb86697f5fe162787",
+      measurementId: "G-75SKCF41PG"
+    };
 
-        const app = firebase.initializeApp(firebaseConfig);
-        const db = firebase.database();
-
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
 
     const people = ["爸", "媽", "謙", "冠"];
-    // 顯示時間格式
+
     function getFormattedTaiwanTime(date) {
-        return date.toLocaleString('zh-TW', {
+      return date.toLocaleString('zh-TW', {
         timeZone: 'Asia/Taipei',
         year: 'numeric',
         month: 'long',
@@ -80,21 +79,17 @@
         hour: '2-digit',
         minute: '2-digit',
         hour12: false
-        });
+      });
     }
 
-    // 產生目前時間字串（精確到分鐘）
-    function getCurrentMinuteKey() {
-      const now = new Date();
-      const yyyy = now.getFullYear();
-      const mm = String(now.getMonth() + 1).padStart(2, '0');
-      const dd = String(now.getDate()).padStart(2, '0');
-      const hh = String(now.getHours()).padStart(2, '0');
-      const mi = String(now.getMinutes()).padStart(2, '0');
-      return `${yyyy}-${mm}-${dd}-${hh}-${mi}`;
+    function getTodayKey(date = new Date()) {
+      const taiwanDate = new Date(date.toLocaleString("en-US", { timeZone: "Asia/Taipei" }));
+      const yyyy = taiwanDate.getFullYear();
+      const mm = String(taiwanDate.getMonth() + 1).padStart(2, '0');
+      const dd = String(taiwanDate.getDate()).padStart(2, '0');
+      return `${yyyy}-${mm}-${dd}`;
     }
 
-    // 隨機分配
     function rand() {
       let p = [...people];
       let clo = p.splice(Math.floor(Math.random() * p.length), 1)[0];
@@ -103,39 +98,33 @@
       return { clothes: clo, garbage: gar, fruit: fru };
     }
 
-    // 更新畫面
     function updateUI(data) {
       document.getElementById("clothes").textContent = data.clothes;
       document.getElementById("garbage").textContent = data.garbage;
       document.getElementById("fruit").textContent = data.fruit;
     }
 
-    // 主流程：每分鐘取得或產生新資料
-    function fetchOrGenerate() {
-        const now = new Date();
-        const formatted = getFormattedTaiwanTime(now);
-        document.getElementById("time").textContent = "台灣時間：" + formatted;
+    function fetchOrGenerateToday() {
+      const now = new Date();
+      const formatted = getFormattedTaiwanTime(now);
+      document.getElementById("time").textContent = "台灣時間：" + formatted;
 
-        const key = getCurrentMinuteKey(now);
-        const ref = db.ref("chores/" + key);
+      const key = getTodayKey(now);
+      const ref = db.ref("chores/" + key);
 
-        ref.once("value").then((snapshot) => {
+      ref.once("value").then((snapshot) => {
         if (snapshot.exists()) {
-            updateUI(snapshot.val());
+          updateUI(snapshot.val());
         } else {
-            const result = rand();
-            ref.set(result);
-            console.log(result.clothes);
-            updateUI(result);
+          const result = rand();
+          ref.set(result);
+          updateUI(result);
         }
-        });
+      });
     }
 
-    // 初次執行一次
-    fetchOrGenerate();
-
-    // 每分鐘執行一次
-    setInterval(fetchOrGenerate, 60 * 1000);
+    // 初次載入執行
+    fetchOrGenerateToday();
   </script>
 </body>
 </html>
