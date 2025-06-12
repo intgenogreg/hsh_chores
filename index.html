@@ -54,9 +54,8 @@
   </center></div>
   <br/><br/>
   <h3 style="font-size:50px; text-align:center;">~~ 感謝各位的付出 ~~</h3>
-  <br/><br/><br/><br/><br/><br/><br/>
-  <h3 style="font-size:30px; text-align:center;">系統由王穎冠建立及管理 請珍惜使用</h3>
-
+  <br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
+  <h3 style="font-size:30px; text-align:center;">系統由王穎冠<p style="color:gray; font-size:20px"><i>爆肝</i></p>建立及管理 請珍惜使用</h3>
   <!-- Firebase SDK -->
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
@@ -113,7 +112,7 @@
     function fetchOrGenerateToday() {
       const now = new Date();
       const formatted = getFormattedTaiwanTime(now);
-      document.getElementById("time").textContent = "台灣時間：" + formatted;
+      document.getElementById("time").textContent = "登入時間：" + formatted;
 
       const key = getTodayKey(now);
       const ref = db.ref("chores/" + key);
