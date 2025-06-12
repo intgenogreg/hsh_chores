@@ -1,129 +1,139 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <style>
-            button{
-                width:100px;
-                height:35px;
-                font-size:15px;
-                margin-right:10px;
-            }
-            p{
-                font-size:20px;
-                display:inline-block;
-                margin-right:10px;
-            }
-            img{
-                height:150px;
-                display:block;
-                margin-top:50px;
-            }
-        </style>
-    </head>
-    <body>
-        <h2>甜蜜的家值日生 輪值系統  <!--   <span id="year"></span> / <span id="month"></span> / <span id="date"></span>   --> </h2>
-        <h3><span id="time"></span></h3>
-        <h3>參與者：爸、媽、謙、冠</h3>
-        <table width="500" style="text-align:center;" border="1">
-            <tr>
-                <th></th>
-                <th>洗衣服</th>
-                <th>倒垃圾</th>
-                <th>切水果</th>
-            </tr>
-            <tr>
-                <td width="75">負責人</td>
-                <td valign="middle"><span id="clothes"></span></td> <!--用id尋找變數，以顯示在html表格上-->
-                <td valign="middle"><span id="garbage"></span></td>
-                <td valign="middle"><span id="fruit"></span></td>
-            </tr>
-        </table>
-        <br/>
+<head>
+  <meta charset="UTF-8">
+  <title>甜蜜的家值日生</title>
+  <style>
+    button {
+      width: 100px;
+      height: 35px;
+      font-size: 15px;
+      margin-right: 10px;
+    }
+    p {
+      font-size: 20px;
+      display: inline-block;
+      margin-right: 10px;
+    }
+    img {
+      height: 150px;
+      display: block;
+      margin-top: 50px;
+    }
+    table {
+      margin-top: 20px;
+      border-collapse: collapse;
+    }
+    th, td {
+      padding: 10px;
+    }
+  </style>
+</head>
+<body>
+  <h2>甜蜜的家值日生 輪值系統</h2>
+  <h3><span id="time"></span></h3>
+  <h3>參與者：爸、媽、謙、冠</h3>
 
-        <button onclick='
-            rand();
-            localStorage.setItem("time",currentTime);
-            localStorage.setItem("clothes",clo);
-            localStorage.setItem("garbage",gar);
-            localStorage.setItem("fruit",fru);
+  <table width="500" style="text-align:center;" border="1">
+    <tr>
+      <th></th>
+      <th>洗衣服</th>
+      <th>倒垃圾</th>
+      <th>切水果</th>
+    </tr>
+    <tr>
+      <td width="75">負責人</td>
+      <td><span id="clothes"></span></td>
+      <td><span id="garbage"></span></td>
+      <td><span id="fruit"></span></td>
+    </tr>
+  </table>
 
-            clothes=localStorage.getItem("clothes");
-            document.getElementById("clothes").textContent = clothes;
+  <!--使用firebase作為資料庫-->
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyDi9v1HV7UFeQnePmg3ZUYeK3wO9O731GI",
+            authDomain: "hsh-chores.firebaseapp.com",
+            projectId: "hsh-chores",
+            storageBucket: "hsh-chores.firebasestorage.app",
+            messagingSenderId: "961868131334",
+            appId: "1:961868131334:web:216b9eb86697f5fe162787",
+            measurementId: "G-75SKCF41PG"
+        };
 
-            garbage=localStorage.getItem("garbage");
-            document.getElementById("garbage").textContent = garbage;
+        const app = firebase.initializeApp(firebaseConfig);
+        const db = firebase.database();
 
-            fruit=localStorage.getItem("fruit");
-            document.getElementById("fruit").textContent = fruit;
-        '>隨機產生</button>
 
-        <script>
-            const twFormatter = new Intl.DateTimeFormat('zh-TW', {
-                timeZone: 'Asia/Taipei',
-                year: 'numeric',
-                month: 'long',
-                day: 'numeric',
-                hour: '2-digit',
-                minute: '2-digit',
-                //second: '2-digit',
-                hour12: false
-            });
-            let time=new Date();
-            let currentTime=`台灣時間:${twFormatter.format(time)}`;
-            document.getElementById('time').textContent = currentTime;
+    const people = ["爸", "媽", "謙", "冠"];
+    // 顯示時間格式
+    function getFormattedTaiwanTime(date) {
+        return date.toLocaleString('zh-TW', {
+        timeZone: 'Asia/Taipei',
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit',
+        hour12: false
+        });
+    }
 
-            /*
-            var timeDetails = {
-                year: time.getFullYear(),
-                month: time.getMonth() + 1, //月份index從0開始
-                date: time.getDate(),
-                hour: time.getHours(),
-                minute: time.getMinutes(),
-                second: time.getSeconds(),
-            };
+    // 產生目前時間字串（精確到分鐘）
+    function getCurrentMinuteKey() {
+      const now = new Date();
+      const yyyy = now.getFullYear();
+      const mm = String(now.getMonth() + 1).padStart(2, '0');
+      const dd = String(now.getDate()).padStart(2, '0');
+      const hh = String(now.getHours()).padStart(2, '0');
+      const mi = String(now.getMinutes()).padStart(2, '0');
+      return `${yyyy}-${mm}-${dd}-${hh}-${mi}`;
+    }
 
-            document.getElementById('year').textContent = timeDetails.year;
-            document.getElementById('month').textContent = timeDetails.month;
-            document.getElementById('date').textContent = timeDetails.date;
-            */
-            let clo;let gar;let fru;
-            function rand(){      //函數：隨機生成並將決定之負責人放到clo、gar、fru三個全域變數中
-                let people=["爸","媽","謙","冠"];
-                let rand1=Math.random()*4;
-                let rand2=Math.random()*3;
-                let rand3=Math.random()*3;
+    // 隨機分配
+    function rand() {
+      let p = [...people];
+      let clo = p.splice(Math.floor(Math.random() * p.length), 1)[0];
+      let gar = p.splice(Math.floor(Math.random() * p.length), 1)[0];
+      let fru = p.splice(Math.floor(Math.random() * p.length), 1)[0];
+      return { clothes: clo, garbage: gar, fruit: fru };
+    }
 
-                let r1=Math.floor(rand1);
-                clo=people[r1];
+    // 更新畫面
+    function updateUI(data) {
+      document.getElementById("clothes").textContent = data.clothes;
+      document.getElementById("garbage").textContent = data.garbage;
+      document.getElementById("fruit").textContent = data.fruit;
+    }
 
-                people.splice(r1,1);
-                let r2=Math.floor(rand2);
-                gar=people[r2];
+    // 主流程：每分鐘取得或產生新資料
+    function fetchOrGenerate() {
+        const now = new Date();
+        const formatted = getFormattedTaiwanTime(now);
+        document.getElementById("time").textContent = "台灣時間：" + formatted;
 
-                let r3=Math.floor(rand3);
-                fru=people[r3];
-            }
-            
-            console.log(currentTime);
-            console.log(localStorage.getItem("time"));
-            if(currentTime!==localStorage.getItem("time")){ //觸發rand函數，生成新一組負責人的條件：此次載入時的時間和上次載入的時間不一樣(不同天)
-                rand();
-                localStorage.setItem("time",currentTime); //為避免每次重整時&每台不同裝置生成之隨機結果不一樣，將該時間段內第一次生成之結果固定在伺服器(localStorage)
-                localStorage.setItem("clothes",clo);      //補充：currentTime也要存入localStorage，表示上一次成功生成時的時間，以供if迴圈判斷
-                localStorage.setItem("garbage",gar);
-                localStorage.setItem("fruit",fru);
-            }
+        const key = getCurrentMinuteKey(now);
+        const ref = db.ref("chores/" + key);
 
-            let clothes;let garbage;let fruit;
-            clothes=localStorage.getItem("clothes"); //將localStorage中存的資料存進新的變數，並賦予id，讓html表格中能顯示負責人
-            document.getElementById('clothes').textContent = clothes;
+        ref.once("value").then((snapshot) => {
+        if (snapshot.exists()) {
+            updateUI(snapshot.val());
+        } else {
+            const result = rand();
+            ref.set(result);
+            console.log(result.clothes);
+            updateUI(result);
+        }
+        });
+    }
 
-            garbage=localStorage.getItem("garbage");
-            document.getElementById('garbage').textContent = garbage;
+    // 初次執行一次
+    fetchOrGenerate();
 
-            fruit=localStorage.getItem("fruit");
-            document.getElementById('fruit').textContent = fruit;
-
-        </script>
-    </body>
+    // 每分鐘執行一次
+    setInterval(fetchOrGenerate, 60 * 1000);
+  </script>
+</body>
 </html>
