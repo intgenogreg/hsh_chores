@@ -56,7 +56,27 @@
   <br/><br/>
   <h3 style="font-size:50px; text-align:center;">~~ 感謝各位的付出 ~~</h3>
   <br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
+
+
+  <!--按鈕-->
+  <center>
+  <span>
+    <span><input type="button" style="width:300px; height:200px; font-size:50px; margin-right:50px" value="規則說明" onclick="location.href='rule.html'"></span>
+    <span><input type="button" style="width:300px; height:200px; font-size:50px;" value="GitHub連結" onclick="location.href='https://github.com/intgenogreg/hsh_chores'"></span> <!--中間的按鈕置中-->
+    <span><input type="button" style="width:300px; height:200px; font-size:50px; margin-left:50px" value="重新生成" onclick='
+
+    //重新生成
+    const newResult=rand();
+    ref.set(newResult);
+    updateUI(newResult);
+    
+    
+    '></span>
+  </span>
+  </center>
   <h3 style="font-size:30px; text-align:center;">系統由王穎冠<p style="color:gray; font-size:20px"><i>爆肝</i></p>建立及管理 請珍惜使用</h3>
+  
+  
   <!-- Firebase SDK -->
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
@@ -69,10 +89,13 @@
       messagingSenderId: "961868131334",
       appId: "1:961868131334:web:216b9eb86697f5fe162787",
       measurementId: "G-75SKCF41PG"
-    };
+    }; //這個firebaseConfig是找到我的firebase的關鍵
 
-    firebase.initializeApp(firebaseConfig);
-    const db = firebase.database();
+    firebase.initializeApp(firebaseConfig); //用在這!!
+    const db = firebase.database(); //db的型態是firebase.database.Database，代表的是我的firebase
+  </script>
+  
+  <script>
 
     const people = ["爸", "媽", "謙", "冠"];
 
@@ -87,7 +110,8 @@
         hour12: false
       });
     }
-
+    
+    //取得今天日期
     function getTodayKey(date = new Date()) {
       const taiwanDate = new Date(date.toLocaleString("en-US", { timeZone: "Asia/Taipei" }));
       const yyyy = taiwanDate.getFullYear();
@@ -95,6 +119,18 @@
       const dd = String(taiwanDate.getDate()).padStart(2, '0');
       return `${yyyy}-${mm}-${dd}`;
     }
+
+    //取得昨天日期
+    function getYesterdayKey(date = new Date()) {
+      const taiwanDate = new Date(date.toLocaleString("en-US", { timeZone: "Asia/Taipei" }));
+      taiwanDate.setDate(taiwanDate.getDate()-1);//減一天
+
+      const yyyy = taiwanDate.getFullYear();
+      const mm = String(taiwanDate.getMonth() + 1).padStart(2, '0');
+      const dd = String(taiwanDate.getDate()).padStart(2, '0');
+      return `${yyyy}-${mm}-${dd}`;
+    }
+
 
     function rand() {
       const all = [...people];
@@ -121,21 +157,31 @@
       document.getElementById("fruit").textContent = data.fruit;
     }
 
+    //取得今天ref
+    const now = new Date();
+    const key = getTodayKey(now);
+    const ref = db.ref("chores/" + key); //以今天日期作為key，ref的型態是firebase.database.Database，代表的是金鑰是key的那一筆資料
+                                          //要存資料(.set(...))、讀取資料(once(...))、刪除資料(.remove())都是用ref操作
+
+    //取得昨天ref
+    const yesKey= getYesterdayKey(now);
+    const yesRef= db.ref("chores/"+yesKey);
+    
+
     function fetchOrGenerateToday() {
-      const now = new Date();
       const formatted = getFormattedTaiwanTime(now);
       document.getElementById("time").textContent = "登入時間：" + formatted;
 
-      const key = getTodayKey(now);
-      const ref = db.ref("chores/" + key);
 
-      ref.once("value").then((snapshot) => {
-        if (snapshot.exists()) {
+      ref.once("value").then((snapshot) => { //once就是讀取資料
+        if (snapshot.exists()) { //若今天已有資料，顯示該資料即可(用自定義函式uploadUI)
           updateUI(snapshot.val());
-        } else {
+        } else {                   //若今天無資料，則再生成一份(用自訂一函式rand)
           const result = rand();
-          ref.set(result);
-          updateUI(result);
+          ref.set(result);         //放進firebase中
+          updateUI(result);        //顯示
+
+          yesRef.remove();       //刪除昨天資料
         }
       });
     }
