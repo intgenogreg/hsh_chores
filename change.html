@@ -3,7 +3,7 @@
     <head>
         <meta charset="UTF-8">
         <meta name="description" content="為了學習獨立，培養生活自理能力，我們從簡單家事－－洗衣服、倒垃圾、切水果開始練習，也一起分擔家事！！此為輪值網站，每天隨機～～"/>
-        <title>調班</title>
+        <title>換班系統</title>
         <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
         <style>
             button {
@@ -104,7 +104,7 @@
             let who;//代替別人做事的
             let per;//原本的負責人
             let what;//針對的家事項目
-            let sentence;
+            let sent; let sentence;
 
             function choreChosen(m){
                 per = localStorage.getItem(opts[0][m]);//找出做該家事的人
@@ -126,10 +126,14 @@
                 else{
                     who=random();
                 }
-                sentence = `${date}：${who}代替${per}去做了${what}`;
+                sent = `${who}代替${per}去做了${what}`;
+                sentence=`【${getTime()}】${who}代替${per}去做了${what}`;
                 document.getElementById("sentence").textContent = sentence;
                 var check_Button = document.getElementById("check");
                 check_Button.style.display='inline';
+
+                const ref2 = db.ref("chores/" + "changeRecord");//將更改紀錄(sentence)存進firebase(key:精確至分鐘的時間)
+                ref2.update({[getTime()]:sent});
             }
 
             function hideSentAndCheck(){ //隱藏句子與check button
@@ -152,6 +156,15 @@
                 ref.update({[what]:who});
             }
 
+            function getTime(){
+                const now = new Date();
+                const yyyy = now.getFullYear();
+                const mm = String(now.getMonth() + 1).padStart(2, '0');
+                const dd = String(now.getDate()).padStart(2, '0');
+                const hh = String(now.getHours()).padStart(2, '0');
+                const mi = String(now.getMinutes()).padStart(2, '0');
+                return `${yyyy}-${mm}-${dd}-${hh}:${mi}`;
+            }
         </script>
     </body>
 </html>

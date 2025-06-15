@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="description" content="為了學習獨立，培養生活自理能力，我們從簡單家事－－洗衣服、倒垃圾、切水果開始練習，也一起分擔家事！！此為輪值網站，每天隨機～～"/>
+        <title>換班紀錄</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    </head>
+    <body>
+        <h2 style="display:inline">甜蜜的家值日生 調班紀錄  </h2><a href="index.html">回主頁</a>
+        <br/><br/>
+        <button onclick='
+            ref.remove();
+            table.innerHTML = "";
+        '>全部刪除</button>
+        <table id="recordTable" border="0">
+            <td><span></span></td>
+            <td></td>
+        </table>
+        
+
+        <!-- Firebase SDK -->
+        <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+        <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+        <script>
+            const firebaseConfig = {
+            apiKey: "AIzaSyDi9v1HV7UFeQnePmg3ZUYeK3wO9O731GI",
+            authDomain: "hsh-chores.firebaseapp.com",
+            projectId: "hsh-chores",
+            storageBucket: "hsh-chores.firebasestorage.app",
+            messagingSenderId: "961868131334",
+            appId: "1:961868131334:web:216b9eb86697f5fe162787",
+            measurementId: "G-75SKCF41PG"
+            }; //這個firebaseConfig是找到我的firebase的關鍵
+
+            firebase.initializeApp(firebaseConfig); //用在這!!
+            const db = firebase.database(); //db的型態是firebase.database.Database，代表的是我的firebase
+        </script>
+
+        <script>
+            let table;
+            const ref=db.ref("chores/changeRecord");
+            ref.once("value").then(snapshot => {
+                snapshot.forEach(childSnapshot => {
+                    let timeRecord=childSnapshot.key;
+                    let changeRecord=childSnapshot.val();
+                    let re=`【${timeRecord}】 ${changeRecord}`;
+                    table = document.getElementById("recordTable");
+                    let row=table.insertRow();
+                    let cell1=row.insertCell();
+                    let cell2=row.insertCell();
+                    cell1.innerHTML=re;
+
+                    let deleteButton = document.createElement("button");
+                    deleteButton.textContent = "刪除";
+                    deleteButton.onclick = () => {
+                        table.deleteRow(row.rowIndex);
+                        db.ref("chores/changeRecord/" + timeRecord).remove();
+                    };
+
+                    cell2.appendChild(deleteButton);
+                });
+            });
+        </script>
+
+    </body>
+</html>
