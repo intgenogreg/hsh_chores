@@ -63,15 +63,7 @@
   <span>
     <span><input type="button" style="width:300px; height:200px; font-size:50px; margin-right:50px" value="規則說明" onclick="location.href='rule.html'"></span>
     <span><input type="button" style="width:300px; height:200px; font-size:50px;" value="GitHub連結" onclick="location.href='https://github.com/intgenogreg/hsh_chores'"></span> <!--中間的按鈕置中-->
-    <span><input type="button" style="width:300px; height:200px; font-size:50px; margin-left:50px" value="重新生成" onclick='
-
-    //重新生成
-    const newResult=rand();
-    ref.set(newResult);
-    updateUI(newResult);
-    
-    
-    '></span>
+    <span><input type="button" style="width:300px; height:200px; font-size:50px; margin-left:50px" value="我要調班" onclick="location.href='change.html'"></span>
   </span>
   </center>
   <h3 style="font-size:30px; text-align:center;">系統由王穎冠<p style="color:gray; font-size:20px"><i>爆肝</i></p>建立及管理 請珍惜使用</h3>
@@ -95,6 +87,7 @@
     const db = firebase.database(); //db的型態是firebase.database.Database，代表的是我的firebase
   </script>
   
+
   <script>
 
     const people = ["爸", "媽", "謙", "冠"];
@@ -153,15 +146,20 @@
 
     function updateUI(data) {
       document.getElementById("clothes").textContent = data.clothes;
+      localStorage.setItem("clothes",data.clothes);
       document.getElementById("garbage").textContent = data.garbage;
+      localStorage.setItem("garbage",data.garbage);
       document.getElementById("fruit").textContent = data.fruit;
+      localStorage.setItem("fruit",data.fruit);
     }
 
     //取得今天ref
     const now = new Date();
     const key = getTodayKey(now);
+    localStorage.setItem("date",key);//把ref存到
     const ref = db.ref("chores/" + key); //以今天日期作為key，ref的型態是firebase.database.Database，代表的是金鑰是key的那一筆資料
                                           //要存資料(.set(...))、讀取資料(once(...))、刪除資料(.remove())都是用ref操作
+    localStorage.setItem("ref",ref);//把ref存到localStorage，供調班環節(其他html文本)使用
 
     //取得昨天ref
     const yesKey= getYesterdayKey(now);

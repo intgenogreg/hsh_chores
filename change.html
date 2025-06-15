@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="description" content="為了學習獨立，培養生活自理能力，我們從簡單家事－－洗衣服、倒垃圾、切水果開始練習，也一起分擔家事！！此為輪值網站，每天隨機～～"/>
+        <title>調班</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+        <style>
+            button {
+                width: 100px;
+                height: 35px;
+                font-size: 15px;
+                margin-right: 10px;
+            }
+        </style>
+    </head>
+    <body>
+        <h2 style="display:inline">甜蜜的家值日生 調班申請  </h2><a href="index.html">回主頁</a>
+        <br/><br/>
+        <p style="float:left">一、請選擇您要調班的項目：</p>
+        <button style="margin-top:10px "id="clothes" onclick='clicked(0,0)'>洗衣服</button>
+        <button id="garbage" onclick='clicked(0,1)'>倒垃圾</button>
+        <button id="fruit" onclick='clicked(0,2)'>切水果</button>
+
+        <br/><br/>
+        <p style="float:left">二、請選擇您要替換之人選：</p>
+        <button style="margin-top:10px; width:50px;"id="爸" onclick='clicked(1,0)'>爸</button>
+        <button style="margin-top:10px; width:50px;"id="媽" onclick='clicked(1,1)'>媽</button>
+        <button style="margin-top:10px; width:50px;"id="謙" onclick='clicked(1,2)'>謙</button>
+        <button style="margin-top:10px; width:50px;"id="冠" onclick='clicked(1,3)'>冠</button>
+        <button style="margin-top:10px;"id="RAN" onclick='clicked(1,4);'>隨機選擇</button>
+
+        <br/><br/>
+
+        <p style="float:left"><span id="sentence"></span></p>
+        <button style="display:none; margin-top:10px; margin-left:10px; width:50px;"id="check" onclick='
+            window.confirm("您確認這項變更？");
+            if (confirm("您確認這項變更？") == true) {
+                returnNewData();
+                hideSentAndCheck();
+                for(var j=0;j<2;j++){ //清空全部按鈕顏色
+                    for(var i=0;i<opts[j].length;i++){
+                        var btn=document.getElementById(opts[j][i]);
+                        btn.disabled=false;
+                        btn.style.backgroundColor="";
+                    }
+                }
+            }
+        '> 確認</button>
+
+
+        <!-- Firebase SDK -->
+        <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+        <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+        <script>
+            const firebaseConfig = {
+            apiKey: "AIzaSyDi9v1HV7UFeQnePmg3ZUYeK3wO9O731GI",
+            authDomain: "hsh-chores.firebaseapp.com",
+            projectId: "hsh-chores",
+            storageBucket: "hsh-chores.firebasestorage.app",
+            messagingSenderId: "961868131334",
+            appId: "1:961868131334:web:216b9eb86697f5fe162787",
+            measurementId: "G-75SKCF41PG"
+            }; //這個firebaseConfig是找到我的firebase的關鍵
+
+            firebase.initializeApp(firebaseConfig); //用在這!!
+            const db = firebase.database(); //db的型態是firebase.database.Database，代表的是我的firebase
+        </script>
+
+        <script>
+            const opts=[["clothes","garbage","fruit"],["爸","媽","謙","冠","RAN"]];
+            function clicked(n,m){
+
+                if(n===0){
+                    for(var i=0;i<opts[1].length;i++){ //當上排按鈕出現變動(被按下或更改)，先將下排按鈕全部取消選擇(恢復正常狀態)
+                        var bn = document.getElementById(opts[1][i]);
+                        bn.style.backgroundColor="";
+                        bn.disabled=false;
+                    }
+                    hideSentAndCheck();
+                }
+
+                var button = document.getElementById(opts[n][m]);
+                if(button.style.backgroundColor==="pink"){  //再按一次同一個按鈕可取消(變回正常顏色)
+                    button.style.backgroundColor="";
+                    hideSentAndCheck();
+                }
+                else{ //如果不是按同一個按鈕
+                    for(var i=0;i<opts[n].length;i++){ //先清空全部按鈕顏色
+                        var btn=document.getElementById(opts[n][i]);
+                        btn.style.backgroundColor="";
+                    }
+                    button = document.getElementById(opts[n][m]);
+                    button.style.backgroundColor="pink";
+                    if(n===0){
+                        choreChosen(m);
+                    }
+                    if(n===1){
+                        allChosen(m);
+                    }
+                }
+            }
+
+            let who;//代替別人做事的
+            let per;//原本的負責人
+            let what;//針對的家事項目
+            let sentence;
+
+            function choreChosen(m){
+                per = localStorage.getItem(opts[0][m]);//找出做該家事的人
+                for(var i=0;i<opts[1].length;i++){
+                    var button = document.getElementById(opts[1][i]);
+                    button.disabled=false;
+                }
+                var button = document.getElementById(per);
+                button.disabled=true; //讓那個人的按鈕失效
+
+                what=opts[0][m];
+            }
+
+            let date=localStorage.getItem("date");
+            function allChosen(m){
+                if(m!==4){
+                    who=opts[1][m];
+                }
+                else{
+                    who=random();
+                }
+                sentence = `${date}：${who}代替${per}去做了${what}`;
+                document.getElementById("sentence").textContent = sentence;
+                var check_Button = document.getElementById("check");
+                check_Button.style.display='inline';
+            }
+
+            function hideSentAndCheck(){ //隱藏句子與check button
+                sentence=``;
+                document.getElementById("sentence").textContent = sentence;
+                var check_Button = document.getElementById("check");
+                check_Button.style.display='none';
+            }
+
+            function random(){
+                let people=["爸","媽","謙","冠"];
+                people.splice(opts[1].indexOf(per),1);
+                let random = Math.floor(Math.random()*3);
+                return people[random];
+            }
+
+            function returnNewData(){
+                localStorage.setItem(what,who);
+                const ref = db.ref("chores/" + date);
+                ref.update({[what]:who});
+            }
+
+        </script>
+    </body>
+</html>
