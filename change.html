@@ -126,8 +126,8 @@
                 else{
                     who=random();
                 }
-                sent = `${who}代替${per}去做了${what}`;
-                sentence=`【${getTime()}】${who}代替${per}去做了${what}`;
+                sent = `${who}代替${per}去做${what}`;
+                sentence=`【${getTime()}】${who}代替${per}去做${what}`;
                 document.getElementById("sentence").textContent = sentence;
                 var check_Button = document.getElementById("check");
                 check_Button.style.display='inline';

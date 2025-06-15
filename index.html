@@ -17,9 +17,10 @@
       margin-right: 10px;
     }
     img {
-      height: 150px;
+      height: 308px;
+      width: 308px;
       display: block;
-      margin-top: 50px;
+      /*margin-top: 50px;*/
     }
     table {
       margin-top: 20px;
@@ -40,22 +41,29 @@
   <div style="font-size:40px"><center>
     <table width="1000" style="text-align:center; border-collapse:separate; border:7px solid black;" border="1">
       <tr>
-        <th></th>
+        <!--<th></th>-->
         <th>洗衣服</th>
         <th>倒垃圾</th>
         <th>切水果</th>
       </tr>
       <tr style="font-size:80px; color:blue;">
-        <td style="font-size:40px; color:black;" width="75">負責人</td>
+        <!--<td style="font-size:40px; color:black;" width="75">負責人</td>-->
         <td><span id="clothes"></span></td>
         <td><span id="garbage"></span></td>
         <td><span id="fruit"></span></td>
+      </tr>
+      <tr>
+        <!--<td style="font-size:40px; color:black;" width="75">負責人</td>-->
+        <td style="width:308px"><img id="clothesPic"/></td>
+        <td style="width:308px"><img id="garbagePic"/></td>
+        <td style="width:308px"><img id="fruitPic"/></td>
       </tr>
     </table>
   </center></div>
   <br/><br/>
   <h3 style="font-size:50px; text-align:center;">~~ 感謝各位的付出 ~~</h3>
-  <br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
+  <br/><br/>
+  <br/><br/><br/><br/><br/><br/><br/><br/>
 
 
   <!--按鈕-->
@@ -148,10 +156,15 @@
     function updateUI(data) {
       document.getElementById("clothes").textContent = data.clothes;
       localStorage.setItem("clothes",data.clothes);
+      pic(data.clothes,"clothes");
+
       document.getElementById("garbage").textContent = data.garbage;
       localStorage.setItem("garbage",data.garbage);
+      pic(data.garbage,"garbage");
+
       document.getElementById("fruit").textContent = data.fruit;
       localStorage.setItem("fruit",data.fruit);
+      pic(data.fruit,"fruit");
     }
 
     //取得今天ref
@@ -187,6 +200,17 @@
 
     // 初次載入執行
     fetchOrGenerateToday();
+
+    function pic(pers,cho){
+      const picTotalNum=[6,22,8,28];
+      let persIndex=people.indexOf(pers);
+      const picno = Math.floor(Math.random() * picTotalNum[persIndex]);
+      let imgPath=`圖庫/${pers}/${picno}.jpg`;
+      let imgId=`${cho}Pic`;
+      console.log(imgPath);
+      console.log(imgId);
+      document.getElementById(imgId).src = imgPath;
+    }
   </script>
 </body>
 </html>
