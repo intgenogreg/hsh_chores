@@ -132,8 +132,10 @@
                 var check_Button = document.getElementById("check");
                 check_Button.style.display='inline';
 
-                const ref2 = db.ref("chores/" + "changeRecord");//將更改紀錄(sentence)存進firebase(key:精確至分鐘的時間)
-                ref2.update({[getTime()]:sent});
+
+                //問題：要等真的確定才更換
+                //const ref2 = db.ref("chores/" + "changeRecord");//將更改紀錄(sentence)存進firebase(key:精確至分鐘的時間)
+                //ref2.update({[getTime()]:sent});
             }
 
             function hideSentAndCheck(){ //隱藏句子與check button
@@ -154,6 +156,20 @@
                 localStorage.setItem(what,who);
                 const ref = db.ref("chores/" + date);
                 ref.update({[what]:who});
+
+                const refwho = db.ref(`chores/${who}/${what}`);
+                refwho.once("value").then(snapshot => {
+                    const getwho = snapshot.val();
+                    const newwho= `${parseInt(getwho)+1}`;
+                    refwho.set(newwho);
+                });
+
+                const refper = db.ref(`chores/${per}/${what}`);
+                refper.once("value").then(snapshot => {
+                    const getper = snapshot.val();
+                    const newper= `${parseInt(getper)-1}`;
+                    refper.set(newper);
+                });
             }
 
             function getTime(){
