@@ -57,6 +57,7 @@
         <td style="width:308px"><img id="clothesPic"/></td>
         <td style="width:308px"><img id="garbagePic"/></td>
         <td style="width:308px"><img id="fruitPic"/></td>
+        
       </tr>
     </table>
   </center></div>
@@ -138,6 +139,19 @@
       return `${yyyy}-${mm}-${dd}`;
     }
 
+    //取得一個月以前日期
+    function getMonthAgoKey(date = new Date()) {
+      const taiwanDate = new Date(date.toLocaleString("en-US", { timeZone: "Asia/Taipei" }));
+      const yyyy = taiwanDate.getFullYear();
+      const mm = String(taiwanDate.getMonth() + 1).padStart(2, '0');
+
+      if(mm === 1){yyyy=yyyy-1; mm=12;}
+      else{mm=mm-1;}
+
+      const dd = String(taiwanDate.getDate()).padStart(2, '0');
+      return `${yyyy}-${mm}-${dd}`;
+    }
+
 
     function rand() {
       const all = [...people];
@@ -183,11 +197,16 @@
     //取得昨天ref
     const yesKey= getYesterdayKey(now);
     const yesRef= db.ref("chores/"+yesKey);
+
+    //取得一個月以前ref
+    const monthAgoKey = getMonthAgoKey(now);
+    const monthAgoRef = db.ref("chores/" + monthAgoKey);
     
 
     function fetchOrGenerateToday() {
       const formatted = getFormattedTaiwanTime(now);
       document.getElementById("time").textContent = "登入時間：" + formatted;
+      
 
 
       ref.once("value").then((snapshot) => { //once就是讀取資料
@@ -198,7 +217,7 @@
           ref.set(result);         //放進firebase中
           updateUI(result);        //顯示
 
-          //yesRef.remove();       //刪除昨天資料
+          monthAgoRef.remove();       //刪除昨天資料
         }
       });
     }
