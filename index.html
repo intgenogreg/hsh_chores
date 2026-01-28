@@ -1,240 +1,222 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta charset="UTF-8">
-  <meta name="description" content="為了學習獨立，培養生活自理能力，我們從簡單家事－－洗衣服、倒垃圾、切水果開始練習，也一起分擔家事！！此為輪值網站，每天隨機～～"/>
-  <title>甜蜜的家值日生</title>
-  <style>
-    button {
-      width: 100px;
-      height: 35px;
-      font-size: 15px;
-      margin-right: 10px;
-    }
-    p {
-      font-size: 20px;
-      display: inline-block;
-      margin-right: 10px;
-    }
-    img {
-      height: 308px;
-      width: 308px;
-      display: block;
-      /*margin-top: 50px;*/
-    }
-    table {
-      margin-top: 20px;
-      border-collapse: collapse;
-    }
-    th, td {
-      padding: 10px;
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="description" content="為了學習獨立，培養生活自理能力，我們從簡單家事－－洗衣服、倒垃圾、切水果開始練習，也一起分擔家事！！此為輪值網站，每天隨機～～"/>
+<title>甜蜜的家值日生</title>
+<style>
+button {
+width: 100px;
+height: 35px;
+font-size: 15px;
+margin-right: 10px;
+}
+p {
+font-size: 20px;
+display: inline-block;
+margin-right: 10px;
+}
+img {
+height: 308px;
+width: 308px;
+display: block;
+/*margin-top: 50px;*/
+}
+table {
+margin-top: 20px;
+border-collapse: collapse;
+}
+th, td {
+padding: 10px;
+}
+</style>
 </head>
 <body>
-  <h1 style="font-size:80px; text-align:center;">甜蜜的家 值日生 <br/> 輪值系統</h1>
-  <h1 style="font-size:50px; text-align:center;"> HSH Chore Distribution System</h1>
-  <h3 style="font-size:50px; text-align:center;"><span id="time"></span></h3>
-  <h3 style="font-size:50px; text-align:center;">參與者：爸、媽、謙、冠</h3>
+<h1 style="font-size:80px; text-align:center;">甜蜜的家 值日生 <br/> 輪值系統</h1>
+<h1 style="font-size:50px; text-align:center;"> HSH Chore Distribution System</h1>
+<h3 style="font-size:50px; text-align:center;"><span id="time"></span></h3>
+<h3 style="font-size:50px; text-align:center;">參與者：爸、媽、謙、冠</h3>
 
-  <br/><br/>
-  <div style="font-size:40px"><center>
-    <table width="1000" style="text-align:center; border-collapse:separate; border:7px solid black;" border="1">
-      <tr>
-        <!--<th></th>-->
-        <th>洗衣服</th>
-        <th>倒垃圾</th>
-        <th>切水果</th>
-      </tr>
-      <tr style="font-size:80px; color:blue;">
-        <!--<td style="font-size:40px; color:black;" width="75">負責人</td>-->
-        <td><span id="clothes"></span></td>
-        <td><span id="garbage"></span></td>
-        <td><span id="fruit"></span></td>
-      </tr>
-      <tr>
-        <!--<td style="font-size:40px; color:black;" width="75">負責人</td>-->
-        <td style="width:308px"><img id="clothesPic"/></td>
-        <td style="width:308px"><img id="garbagePic"/></td>
-        <td style="width:308px"><img id="fruitPic"/></td>
-        
-      </tr>
-    </table>
-  </center></div>
-  <br/><br/>
-  <h3 style="font-size:50px; text-align:center;">~~ 感謝各位的付出 ~~</h3>
-  <br/><br/>
-  <br/><br/>
-  <center>
-  <span><img style="width:600px; height:400px; display:inline-block" src="圖庫/cats.jpg"/></span>
-  <span><img style="width:600px; height:400px; display:inline-block"src="圖庫/J.jpg"/></span>
-  </center>
-  <br/><br/><br/><br/><br/><br/>
-
-
-  <!--按鈕-->
-  <center>
-  <span>
-    <span><input type="button" style="width:250px; height:180px; font-size:45px; margin-right:50px" value="規則說明" onclick="location.href='rule.html'"></span>
-    <span><input type="button" style="width:250px; height:180px; font-size:45px;" value="GitHub連結" onclick="location.href='https://github.com/intgenogreg/hsh_chores'"></span> <!--中間的按鈕置中-->
-    <span><input type="button" style="width:250px; height:180px; font-size:45px; margin-left:50px" value="我要換班" onclick="location.href='change.html'"></span>
-    <span><input type="button" style="width:250px; height:180px; font-size:45px; margin-left:50px" value="換班紀錄" onclick="location.href='record.html'"></span>
-  </span>
-  </center>
-  <h3 style="font-size:30px; text-align:center;">系統由王穎冠<p style="color:gray; font-size:20px"><i>爆肝</i></p>建立及管理 請珍惜使用</h3>
-  
-  
-  <!-- Firebase SDK -->
-  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
-  <script>
-    const firebaseConfig = {
-      apiKey: "AIzaSyDi9v1HV7UFeQnePmg3ZUYeK3wO9O731GI",
-      authDomain: "hsh-chores.firebaseapp.com",
-      projectId: "hsh-chores",
-      storageBucket: "hsh-chores.firebasestorage.app",
-      messagingSenderId: "961868131334",
-      appId: "1:961868131334:web:216b9eb86697f5fe162787",
-      measurementId: "G-75SKCF41PG"
-    }; //這個firebaseConfig是找到我的firebase的關鍵
-
-    firebase.initializeApp(firebaseConfig); //用在這!!
-    const db = firebase.database(); //db的型態是firebase.database.Database，代表的是我的firebase
-  </script>
-  
-
-  <script>
-
-    const people = ["爸", "媽", "謙", "冠"];
-
-    function getFormattedTaiwanTime(date) {
-      return date.toLocaleString('zh-TW', {
-        timeZone: 'Asia/Taipei',
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric',
-        hour: '2-digit',
-        minute: '2-digit',
-        hour12: false
-      });
-    }
-    
-    //取得今天日期
-    function getTodayKey(date = new Date()) {
-      const taiwanDate = new Date(date.toLocaleString("en-US", { timeZone: "Asia/Taipei" }));
-      const yyyy = taiwanDate.getFullYear();
-      const mm = String(taiwanDate.getMonth() + 1).padStart(2, '0');
-      const dd = String(taiwanDate.getDate()).padStart(2, '0');
-      return `${yyyy}-${mm}-${dd}`;
-    }
-
-    //取得昨天日期
-    function getYesterdayKey(date = new Date()) {
-      const taiwanDate = new Date(date.toLocaleString("en-US", { timeZone: "Asia/Taipei" }));
-      taiwanDate.setDate(taiwanDate.getDate()-1);//減一天
-
-      const yyyy = taiwanDate.getFullYear();
-      const mm = String(taiwanDate.getMonth() + 1).padStart(2, '0');
-      const dd = String(taiwanDate.getDate()).padStart(2, '0');
-      return `${yyyy}-${mm}-${dd}`;
-    }
-
-    //取得一個月以前日期
-    function getMonthAgoKey(date = new Date()) {
-      const taiwanDate = new Date(date.toLocaleString("en-US", { timeZone: "Asia/Taipei" }));
-      const yyyy = taiwanDate.getFullYear();
-      const mm = String(taiwanDate.getMonth() + 1).padStart(2, '0');
-
-      if(mm === 1){yyyy=yyyy-1; mm=12;}
-      else{mm=mm-1;}
-
-      const dd = String(taiwanDate.getDate()).padStart(2, '0');
-      return `${yyyy}-${mm}-${dd}`;
-    }
+<br/><br/>
+<div style="font-size:40px"><center>
+<table width="1000" style="text-align:center; border-collapse:separate; border:7px solid black;" border="1">
+<tr>
+<!--<th></th>-->
+<th>洗衣服</th>
+<th>倒垃圾</th>
+<th>切水果</th>
+</tr>
+<tr style="font-size:80px; color:blue;">
+<!--<td style="font-size:40px; color:black;" width="75">負責人</td>-->
+<td><span id="clothes"></span></td>
+<td><span id="garbage"></span></td>
+<td><span id="fruit"></span></td>
+</tr>
+<tr>
+<!--<td style="font-size:40px; color:black;" width="75">負責人</td>-->
+<td style="width:308px"><img id="clothesPic"/></td>
+<td style="width:308px"><img id="garbagePic"/></td>
+<td style="width:308px"><img id="fruitPic"/></td>
+</tr>
+</table>
+</center></div>
+<br/><br/>
+<h3 style="font-size:50px; text-align:center;">~~ 感謝各位的付出 ~~</h3>
+<br/><br/>
+<br/><br/>
+<center>
+<span><img style="width:600px; height:400px; display:inline-block" src="圖庫/cats.jpg"/></span>
+<span><img style="width:600px; height:400px; display:inline-block"src="圖庫/J.jpg"/></span>
+</center>
+<br/><br/><br/><br/><br/><br/>
 
 
-    function rand() {
-      const all = [...people];
-
-      // 1. 抽洗衣服（不可重複）
-      const p1 = [...all];
-      const clo = p1.splice(Math.floor(Math.random() * p1.length), 1)[0];
-
-      // 2. 抽倒垃圾（不能是洗衣服的人）
-      const p2 = [...p1]; // 剩下的人
-      const gar = p2[Math.floor(Math.random() * p2.length)];
-
-      // 3. 抽切水果（只能排除洗衣服的人，但可以跟倒垃圾同人）
-      const p3 = all.filter(person => person !== clo);
-      const fru = p3[Math.floor(Math.random() * p3.length)];
-
-      return { clothes: clo, garbage: gar, fruit: fru };
-    }
+<!--按鈕-->
+<center>
+<span>
+<span><input type="button" style="width:250px; height:180px; font-size:45px; margin-right:50px" value="規則說明" onclick="location.href='rule.html'"></span>
+<span><input type="button" style="width:250px; height:180px; font-size:45px;" value="GitHub連結" onclick="location.href='https://github.com/intgenogreg/hsh_chores'"></span> <!--中間的按鈕置中-->
+<span><input type="button" style="width:250px; height:180px; font-size:45px; margin-left:50px" value="我要換班" onclick="location.href='change.html'"></span>
+<span><input type="button" style="width:250px; height:180px; font-size:45px; margin-left:50px" value="換班紀錄" onclick="location.href='record.html'"></span>
+</span>
+</center>
+<h3 style="font-size:30px; text-align:center;">系統由王穎冠<p style="color:gray; font-size:20px"><i>爆肝</i></p>建立及管理 請珍惜使用</h3>
 
 
-    function updateUI(data) {
-      document.getElementById("clothes").textContent = data.clothes;
-      localStorage.setItem("clothes",data.clothes);
-      pic(data.clothes,"clothes");
+<!-- Firebase SDK -->
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+<script>
+const firebaseConfig = {
+apiKey: "AIzaSyDi9v1HV7UFeQnePmg3ZUYeK3wO9O731GI",
+authDomain: "hsh-chores.firebaseapp.com",
+projectId: "hsh-chores",
+storageBucket: "hsh-chores.firebasestorage.app",
+messagingSenderId: "961868131334",
+appId: "1:961868131334:web:216b9eb86697f5fe162787",
+measurementId: "G-75SKCF41PG"
+}; //這個firebaseConfig是找到我的firebase的關鍵
 
-      document.getElementById("garbage").textContent = data.garbage;
-      localStorage.setItem("garbage",data.garbage);
-      pic(data.garbage,"garbage");
-
-      document.getElementById("fruit").textContent = data.fruit;
-      localStorage.setItem("fruit",data.fruit);
-      pic(data.fruit,"fruit");
-    }
-
-    //取得今天ref
-    const now = new Date();
-    const key = getTodayKey(now);
-    localStorage.setItem("date",key);//把ref存到
-    const ref = db.ref("chores/" + key); //以今天日期作為key，ref的型態是firebase.database.Database，代表的是金鑰是key的那一筆資料
-                                          //要存資料(.set(...))、讀取資料(once(...))、刪除資料(.remove())都是用ref操作
-    localStorage.setItem("ref",ref);//把ref存到localStorage，供調班環節(其他html文本)使用
-
-    //取得昨天ref
-    const yesKey= getYesterdayKey(now);
-    const yesRef= db.ref("chores/"+yesKey);
-
-    //取得一個月以前ref
-    const monthAgoKey = getMonthAgoKey(now);
-    const monthAgoRef = db.ref("chores/" + monthAgoKey);
-    
-
-    function fetchOrGenerateToday() {
-      const formatted = getFormattedTaiwanTime(now);
-      document.getElementById("time").textContent = "登入時間：" + formatted;
-      
+firebase.initializeApp(firebaseConfig); //用在這!!
+const db = firebase.database(); //db的型態是firebase.database.Database，代表的是我的firebase
+</script>
 
 
-      ref.once("value").then((snapshot) => { //once就是讀取資料
-        if (snapshot.exists()) { //若今天已有資料，顯示該資料即可(用自定義函式uploadUI)
-          updateUI(snapshot.val());
-        } else {                   //若今天無資料，則再生成一份(用自訂一函式rand)
-          const result = rand();
-          ref.set(result);         //放進firebase中
-          updateUI(result);        //顯示
+<script>
 
-          monthAgoRef.remove();       //刪除昨天資料
-        }
-      });
-    }
+const people = ["爸", "媽", "謙", "冠"];
 
-    // 初次載入執行
-    fetchOrGenerateToday();
+function getFormattedTaiwanTime(date) {
+return date.toLocaleString('zh-TW', {
+timeZone: 'Asia/Taipei',
+year: 'numeric',
+month: 'long',
+day: 'numeric',
+hour: '2-digit',
+minute: '2-digit',
+hour12: false
+});
+}
 
-    function pic(pers,cho){
-      const picTotalNum=[6,22,8,27];
-      let persIndex=people.indexOf(pers);
-      const picno = Math.floor(Math.random() * picTotalNum[persIndex]);
-      let imgPath=`圖庫/${pers}/${picno}.jpg`;
-      let imgId=`${cho}Pic`;
-      console.log(imgPath);
-      console.log(imgId);
-      document.getElementById(imgId).src = imgPath;
-    }
-  </script>
+//取得今天日期
+function getTodayKey(date = new Date()) {
+const taiwanDate = new Date(date.toLocaleString("en-US", { timeZone: "Asia/Taipei" }));
+const yyyy = taiwanDate.getFullYear();
+const mm = String(taiwanDate.getMonth() + 1).padStart(2, '0');
+const dd = String(taiwanDate.getDate()).padStart(2, '0');
+return `${yyyy}-${mm}-${dd}`;
+}
+
+//取得昨天日期
+function getYesterdayKey(date = new Date()) {
+const taiwanDate = new Date(date.toLocaleString("en-US", { timeZone: "Asia/Taipei" }));
+taiwanDate.setDate(taiwanDate.getDate()-1);//減一天
+
+const yyyy = taiwanDate.getFullYear();
+const mm = String(taiwanDate.getMonth() + 1).padStart(2, '0');
+const dd = String(taiwanDate.getDate()).padStart(2, '0');
+return `${yyyy}-${mm}-${dd}`;
+}
+
+
+function rand() {
+const all = [...people];
+
+// 1. 抽洗衣服（不可重複）
+const p1 = [...all];
+const clo = p1.splice(Math.floor(Math.random() * p1.length), 1)[0];
+
+// 2. 抽倒垃圾（不能是洗衣服的人）
+const p2 = [...p1]; // 剩下的人
+const gar = p2[Math.floor(Math.random() * p2.length)];
+
+// 3. 抽切水果（只能排除洗衣服的人，但可以跟倒垃圾同人）
+const p3 = all.filter(person => person !== clo);
+const fru = p3[Math.floor(Math.random() * p3.length)];
+
+return { clothes: clo, garbage: gar, fruit: fru };
+}
+
+
+function updateUI(data) {
+document.getElementById("clothes").textContent = data.clothes;
+localStorage.setItem("clothes",data.clothes);
+pic(data.clothes,"clothes");
+
+document.getElementById("garbage").textContent = data.garbage;
+localStorage.setItem("garbage",data.garbage);
+pic(data.garbage,"garbage");
+
+document.getElementById("fruit").textContent = data.fruit;
+localStorage.setItem("fruit",data.fruit);
+pic(data.fruit,"fruit");
+}
+
+//取得今天ref
+const now = new Date();
+const key = getTodayKey(now);
+localStorage.setItem("date",key);//把ref存到
+const ref = db.ref("chores/" + key); //以今天日期作為key，ref的型態是firebase.database.Database，代表的是金鑰是key的那一筆資料
+//要存資料(.set(...))、讀取資料(once(...))、刪除資料(.remove())都是用ref操作
+localStorage.setItem("ref",ref);//把ref存到localStorage，供調班環節(其他html文本)使用
+
+//取得昨天ref
+const yesKey= getYesterdayKey(now);
+const yesRef= db.ref("chores/"+yesKey);
+
+
+function fetchOrGenerateToday() {
+const formatted = getFormattedTaiwanTime(now);
+document.getElementById("time").textContent = "登入時間：" + formatted;
+
+
+ref.once("value").then((snapshot) => { //once就是讀取資料
+if (snapshot.exists()) { //若今天已有資料，顯示該資料即可(用自定義函式uploadUI)
+updateUI(snapshot.val());
+} else {                   //若今天無資料，則再生成一份(用自訂一函式rand)
+const result = rand();
+ref.set(result);         //放進firebase中
+updateUI(result);        //顯示
+
+          yesRef.remove();       //刪除昨天資料
+          //yesRef.remove();       //刪除昨天資料
+}
+});
+}
+
+// 初次載入執行
+fetchOrGenerateToday();
+
+function pic(pers,cho){
+const picTotalNum=[6,22,8,28];
+let persIndex=people.indexOf(pers);
+const picno = Math.floor(Math.random() * picTotalNum[persIndex]);
+let imgPath=`圖庫/${pers}/${picno}.jpg`;
+let imgId=`${cho}Pic`;
+console.log(imgPath);
+console.log(imgId);
+document.getElementById(imgId).src = imgPath;
+}
+</script>
 </body>
 </html>
